@@ -14,10 +14,20 @@
 #include <stdlib.h>
 #include "libft.h"
 
+/*static	void	st_memdel(void **ap)
+{
+	free(ap);
+	*ap = NULL;
+}
+*/
 int main()
 {
 	size_t size;
+	char	*ptr;
 
-	size = 5;
-	ft_memdel(ft_memalloc(size));
+	size = 10;
+	ptr = ft_memalloc(size);
+	ft_memdel((void *)ptr);
+	//free(ptr);
+	//ptr = NULL;
 }
