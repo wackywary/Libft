@@ -36,6 +36,26 @@ void	lstreplace(t_list *lst, size_t line_size)
 	size_t	newsize;
 
 	k = 0;
+	newchunk = ft_strsub((char*)lst->content, line_size + 1, lst->content_size - line_size);
+	newsize = ft_strlen(newchunk);
+	ft_memdel(&lst->content);
+	lst->content = ft_memalloc(newsize + 1);
+	while (k < newsize)
+	{
+		*((char*)lst->content + k) = *(newchunk + k);
+		k++;
+	}
+	lst->content_size = newsize;
+	ft_strdel(&newchunk);
+}
+/*
+void	lstreplace(t_list *lst, size_t line_size)
+{
+	size_t	k;
+	char	*newchunk;
+	size_t	newsize;
+
+	k = 0;
 	newchunk = ft_strsub((char*)lst->content, line_size + 1, lst->content_size - line_size - 1);
 	newchunk[lst->content_size - line_size - 1] = '\0';
 	newsize = ft_strlen(newchunk);
@@ -46,12 +66,12 @@ void	lstreplace(t_list *lst, size_t line_size)
 		*((char*)lst->content + k) = *(newchunk + k);
 		k++;
 	}
-	//*((char*)lst->content) = *(newchunk);
-	//*((char*)lst->content + k) = '\0';
+	*((char*)lst->content) = *(newchunk);
+	*((char*)lst->content + k) = '\0';
 	lst->content_size = newsize;
 	ft_strdel(&newchunk);
 }
-
+*/
 size_t	get_line_size(t_list *chunks)
 {
 	size_t	line_size;
@@ -61,7 +81,7 @@ size_t	get_line_size(t_list *chunks)
 			line_size++;
 	return (line_size);
 }
-
+/*
 int	get_next_line(const int fd, char **line)
 {
 	static t_list	*chunks;
@@ -94,6 +114,41 @@ int	get_next_line(const int fd, char **line)
 	close(fd);
 	return (1);
 }
+*/
+int	get_next_line(const int fd, char **line)
+{
+	static t_list	*chunks;
+	t_list		*i;
+	size_t		line_size;
+	char		buf[BUFF_SIZE + 1];
+	char		*substr;
+	
+	if ((i = chunk_list(fd, buf)))
+		chunks = i;
+	if (BUFF_SIZE <= 0 || fd < 0 || line == NULL) 
+		return (-1);
+	if (chunks == NULL)
+		return (0);
+	*line = "";
+	while (chunks)
+	{
+		line_size = get_line_size(chunks);
+		substr = ft_strsub((char*)chunks->content, 0 ,line_size);
+		if (ft_strlen(substr))
+		*line = ft_strjoin(*line, substr);
+		ft_strdel(&substr);
+		if (*(char*)(chunks->content + line_size) == '\n')
+		{
+			lstreplace(chunks, line_size);
+			break;
+		}
+		free(chunks);
+		chunks = chunks->next;
+	}
+	close(fd);
+	return (1);
+}
+
 
 int	main()
 {

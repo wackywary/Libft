@@ -56,13 +56,18 @@ void	lstreplace(t_list *lst, size_t line_size)
 	size_t	newsize;
 
 	k = 0;
+	printf("input:\n**%s**\n", (char*)lst->content);
 	newchunk = ft_strsub((char*)lst->content, line_size + 1, lst->content_size - line_size);
+	printf("strsub res:\n**%s**\n", newchunk);
+	printf("strsub length: %zu\n", ft_strlen(newchunk));
 	newsize = ft_strlen(newchunk);
 	ft_memdel(&lst->content);
 	lst->content = ft_memalloc(newsize + 1);
 	while (k < newsize)
 	{
 		*((char*)lst->content + k) = *(newchunk + k);
+		printf("content: %c\n", *((char*)lst->content + k));
+		printf("newchunk: %c\n", *((char*)lst->content + k));
 		k++;
 	}
 	lst->content_size = newsize;
@@ -86,15 +91,9 @@ int	get_next_line(const int fd, char **line)
 	*line = "";
 	while (chunks)
 	{
-		printf("input:\n***%s***\n", (char*)chunks->content);
 		line_size = get_line_size(chunks);
-		printf("line size: %zu\n", line_size);
-		substr = ft_strsub((char*)chunks->content, 0 ,line_size);
-		printf("substr:\n***%s***\n", substr);
-		if (ft_strlen(substr))
-	//	printf("prev line length: %zu\n", ft_strlen(*line));
+		substr = ft_strsub((char*)chunks->content, 0 ,line_size + 1);
 		*line = ft_strjoin(*line, substr);
-		//printf("line:\n***%s***\n", *line);
 		ft_strdel(&substr);
 		if (*(char*)(chunks->content + line_size) == '\n')
 		{
@@ -111,31 +110,19 @@ int	get_next_line(const int fd, char **line)
 int	main()
 {
 	char	*b;
-//	char	text_b[] = "123\n12\n123\n1234\n12345\n123456\n1234567\n12345678\n123456789\n\0";
-	char	text_b[] = "\n\n\n1\n\n1\n123456789\n12345678\n1234567\n12345\n123456\n12345\n12345\n1234\n123\n\0";
-	char	*line;
-	char	*x;
+	char	text_b[] = "123\n12\n123\n1234\n12345\n123456\n1234567\n12345678\n123456789\n\0";
+	char	buf[BUFF_SIZE + 1];
+	t_list	*chunks;
 	int	text_len_b;
 	int	b_fd;
-	int i;
 
-	i = 0;
 	b = "Blain";
-	x = (char*)malloc(sizeof(char) * 5);
 	text_len_b = ft_strlen(text_b);
 	b_fd = open(b, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 	write(b_fd, text_b, text_len_b);
 	close(b_fd);
 	b_fd = open(b, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-	while (i++ < 20)
-	{
-		get_next_line(b_fd, &line);
-		printf("line:\n***%s***\n", line);
-	}
-	printf("%s", x);
-	if (!x)
-		printf("yo!");
-	printf("%s", ft_strcat(x, "a"));
-	printf("%zu", ft_strlen(ft_strcat(x, "a")));
-	printf("check: \n***%s***\n", ft_strsub("abcdefg", 0, 0));
+	chunks = chunk_list(b_fd, buf);
+	lstreplace(chunks, 2);
+	chunks = chunks->next;
 }

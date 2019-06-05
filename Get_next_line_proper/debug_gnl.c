@@ -86,11 +86,11 @@ int	get_next_line(const int fd, char **line)
 	*line = "";
 	while (chunks)
 	{
-		printf("input:\n***%s***\n", (char*)chunks->content);
+	//	printf("input:\n***%s***\n", (char*)chunks->content);
 		line_size = get_line_size(chunks);
-		printf("line size: %zu\n", line_size);
+	//	printf("sub size: %zu\n", line_size);
 		substr = ft_strsub((char*)chunks->content, 0 ,line_size);
-		printf("substr:\n***%s***\n", substr);
+//		printf("substr:\n***%s***\n", substr);
 		if (ft_strlen(substr))
 	//	printf("prev line length: %zu\n", ft_strlen(*line));
 		*line = ft_strjoin(*line, substr);
@@ -112,7 +112,7 @@ int	main()
 {
 	char	*b;
 //	char	text_b[] = "123\n12\n123\n1234\n12345\n123456\n1234567\n12345678\n123456789\n\0";
-	char	text_b[] = "\n\n\n1\n\n1\n123456789\n12345678\n1234567\n12345\n123456\n12345\n12345\n1234\n123\n\0";
+	char	text_b[] = "123456789\n12345678\n1234567\n12345\n123456\n12345\n12345\n1234\n123\n\0";
 	char	*line;
 	char	*x;
 	int	text_len_b;
@@ -137,5 +137,4 @@ int	main()
 		printf("yo!");
 	printf("%s", ft_strcat(x, "a"));
 	printf("%zu", ft_strlen(ft_strcat(x, "a")));
-	printf("check: \n***%s***\n", ft_strsub("abcdefg", 0, 0));
 }
