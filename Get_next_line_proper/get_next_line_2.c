@@ -3,23 +3,6 @@
 #include <stdint.h>
 #include "get_next_line.h"
 
-void	ft_lstaddtoend(t_list *alst, t_list *new)
-{
-	while (alst->next)
-		alst = alst->next;
-	alst->next = new;
-}
-
-int	ft_find_zero(char *string)
-{
-	int i;
-
-	i = 0;
-	while (string[i])
-		i++;
-	return (i);
-}
-
 t_list *chunk_list(int fd, char *buf)
 {
 	long	bytes;
@@ -86,7 +69,7 @@ char	*ft_strsub_0(char const *s, unsigned int start, size_t len)
 		i++;
 		j++;
 	}
-	return (sub);
+	return (ft_strcat(sub, "\0"));
 }
 
 	//	printf("input:\n***%s***\n", (char*)chunks->content);
@@ -102,21 +85,29 @@ int	get_next_line(const int fd, char **line)
 	size_t		line_size;
 	char		buf[BUFF_SIZE + 1];
 	char		*substr;
+	char		*tmp;
 	
 	if ((i = chunk_list(fd, buf)))
 		chunks = i;
 	if (BUFF_SIZE <= 0 || fd < 0 || line == NULL) 
 		return (-1);
 	if (chunks == NULL)
+	{
+		*line = NULL;
 		return (0);
-	*line = "";
+	}
+	*line = ft_strnew(1);
 	while (chunks)
 	{
 		if ((line_size = get_line_size(chunks)) != 0)
 		{
 			substr = ft_strsub_0((char*)chunks->content, 0 ,line_size);
 			if (ft_strlen(substr))
-			*line = ft_strjoin(*line, substr);
+			{
+				tmp = *line;
+				*line = ft_strjoin(*line, substr);
+				ft_strdel(&tmp);
+			}
 			ft_strdel(&substr);
 		}
 		if (*(char*)(chunks->content + line_size) == '\n')
@@ -135,7 +126,7 @@ int	main()
 {
 	char	*b;
 //	char	text_b[] = "123\n12\n123\n1234\n12345\n123456\n1234567\n12345678\n123456789\n\0";
-	char	text_b[] = "\n\n\n1\n\n1\n123456789\n12345678\n1234567\n12345\n123456\n12345\n12345\n1234\n123\n\0";
+	char	text_b[] = "1\n\n\n1\n\n1\n123456789\n12345678\n1234567\n123456\n12345\n1234\n123\n12\n1\n\n\n1";
 	char	*line;
 	char	*x;
 	int	text_len_b;
@@ -150,7 +141,7 @@ int	main()
 	write(b_fd, text_b, text_len_b);
 	close(b_fd);
 	b_fd = open(b, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
-	while (i++ < 20)
+	while (i++ < 25)
 	{
 		get_next_line(b_fd, &line);
 		printf("line:\n***%s***\n", line);
