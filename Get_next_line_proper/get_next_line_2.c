@@ -69,7 +69,8 @@ char	*ft_strsub_0(char const *s, unsigned int start, size_t len)
 		i++;
 		j++;
 	}
-	return (ft_strcat(sub, "\0"));
+	*(sub + j) = '\0';
+	return (sub);
 }
 
 	//	printf("input:\n***%s***\n", (char*)chunks->content);
@@ -93,7 +94,7 @@ int	get_next_line(const int fd, char **line)
 		return (-1);
 	if (chunks == NULL)
 	{
-		*line = NULL;
+		//*line = NULL;
 		return (0);
 	}
 	*line = ft_strnew(1);
@@ -102,13 +103,11 @@ int	get_next_line(const int fd, char **line)
 		if ((line_size = get_line_size(chunks)) != 0)
 		{
 			substr = ft_strsub_0((char*)chunks->content, 0 ,line_size);
+			tmp = *line;
 			if (ft_strlen(substr))
-			{
-				tmp = *line;
 				*line = ft_strjoin(*line, substr);
-				ft_strdel(&tmp);
-			}
 			ft_strdel(&substr);
+			ft_strdel(&tmp);
 		}
 		if (*(char*)(chunks->content + line_size) == '\n')
 		{
