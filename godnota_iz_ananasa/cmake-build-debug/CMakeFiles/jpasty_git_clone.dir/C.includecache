@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/denis/42/jpasty_git_clone/get_next_line.h
+sys/types.h
+-
+sys/uio.h
+-
+unistd.h
+-
+stdlib.h
+-
+
+/home/denis/42/jpasty_git_clone/libft/libft.h
+unistd.h
+-
+stdlib.h
+-
+string.h
+-
+
+/home/denis/42/jpasty_git_clone/main.c
+unistd.h
+-
+fcntl.h
+-
+libft/libft.h
+/home/denis/42/jpasty_git_clone/libft/libft.h
+get_next_line.h
+/home/denis/42/jpasty_git_clone/get_next_line.h
+stdio.h
+-
+
